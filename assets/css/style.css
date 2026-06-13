@@ -691,7 +691,8 @@ main {
   height: 100%;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start; /* Allows scrolling when content is taller than viewport */
+  padding: 40px 15px; /* Adds breathing room around the modal */
   overflow-y: auto;
   overscroll-behavior: contain;
   z-index: 20;
@@ -731,8 +732,10 @@ main {
 .testimonials-modal {
   background: var(--eerie-black-2);
   position: relative;
-  padding: 15px;
-  margin: 15px 12px;
+  padding: 30px; /* Increased padding for better text readability */
+  margin: auto; /* Centers the modal vertically if shorter than viewport, but allows scrolling if taller */
+  max-width: 700px; /* Restricts the modal from getting too wide on large screens */
+  width: 100%;
   border: 1px solid var(--jet);
   border-radius: 14px;
   box-shadow: var(--shadow-5);
@@ -1812,8 +1815,8 @@ textarea.form-input::-webkit-resizer {
   /* testimonials modal */
 
   .testimonials-modal {
-    gap: 35px;
-    max-width: 680px;
+    gap: 30px;
+    max-width: 60%;
   }
 
   .modal-avatar-box img {
@@ -2378,4 +2381,49 @@ textarea.form-input::-webkit-resizer {
 .contact-channel-card:hover .contact-channel-arrow {
   transform: translateX(4px);
   color: var(--orange-yellow-crayola);
+}
+
+/* =========================================
+   INTERACTIVE EFFECTS (effects.js)
+   ========================================= */
+
+.fx-ripple {
+  position: absolute;
+  border-radius: 50%;
+  transform: scale(0);
+  animation: ripple-anim 650ms linear;
+  background: rgba(255, 255, 255, 0.2);
+  pointer-events: none;
+}
+
+@keyframes ripple-anim {
+  to {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+.avatar-box {
+  cursor: pointer;
+}
+
+.easter-egg-clue {
+  color: var(--orange-yellow-crayola);
+  text-align: center;
+  font-size: 14px;
+  margin-top: 15px;
+  cursor: help;
+  opacity: 0.4;
+  transition: opacity var(--transition-1);
+  animation: pulse-clue 2s infinite alternate;
+}
+
+@keyframes pulse-clue {
+  0% { transform: scale(1); opacity: 0.4; text-shadow: 0 0 2px var(--orange-yellow-crayola); }
+  100% { transform: scale(1.1); opacity: 0.8; text-shadow: 0 0 8px var(--orange-yellow-crayola); }
+}
+
+.easter-egg-clue:hover {
+  opacity: 1;
+  animation: none;
 }

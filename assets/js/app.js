@@ -8,6 +8,14 @@ createApp({
     const isSidebarActive = ref(false);
     const activeModalPost = ref(null);
 
+    const parsedModalText = computed(() => {
+      if (!activeModalPost.value) return '';
+      let text = activeModalPost.value.fullText || activeModalPost.value.excerpt;
+      text = text.replace(/\*\*(.*?)\*\*/g, '<strong style="color: var(--white-1); font-weight: 600;">$1</strong>');
+      text = text.replace(/• (.*?)(?=\n|$)/g, '<li style="margin-left: 20px; list-style-type: disc;">$1</li>');
+      return text;
+    });
+
     // ── Typewriter role cycling ──────────────────────────────
     const roles = data.value.profile.role.split(' | ').map(r => r.trim());
     const displayRole = ref(roles[0]);
@@ -102,6 +110,7 @@ createApp({
       toggleSidebar,
       isSidebarActive,
       activeModalPost,
+      parsedModalText,
       openModal,
       closeModal,
       getSocialName,
