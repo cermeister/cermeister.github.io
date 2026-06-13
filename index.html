@@ -22,16 +22,6 @@
 
 <body>
 
-  <!--
-    Hidden form for Netlify's deploy-time form detection.
-    Required when the real form is rendered by JavaScript.
-  -->
-  <form name="contact" data-netlify="true" netlify-honeypot="bot-field" hidden>
-    <input type="text" name="fullname" />
-    <input type="email" name="email" />
-    <textarea name="message"></textarea>
-  </form>
-
   <div id="app">
     <main>
       <!-- SIDEBAR -->
@@ -255,7 +245,7 @@
           <header>
             <h2 class="h2 article-title">Contact</h2>
           </header>
-          
+
           <section class="mapbox" data-mapbox>
             <figure>
               <iframe
@@ -264,54 +254,40 @@
             </figure>
           </section>
 
-          <section class="contact-form">
-            <h3 class="h3 form-title">Contact Form</h3>
+          <section class="contact-ways">
+            <p class="contact-ways-intro">Feel free to reach out through any of the platforms below. I typically respond within 24 hours.</p>
 
-            <!-- Success message -->
-            <div v-if="formStatus === 'success'" class="form-status form-status--success">
-              <ion-icon name="checkmark-circle-outline"></ion-icon>
-              <p>Message sent! I'll get back to you soon. 🎉</p>
-            </div>
+            <h3 class="h3 contact-ways-title">Direct Contact</h3>
+            <ul class="contact-channels-list">
+              <li v-for="contact in data.profile.contacts" :key="contact.title">
+                <a :href="contact.link" class="contact-channel-card" target="_blank" rel="noopener noreferrer">
+                  <div class="contact-channel-icon">
+                    <ion-icon :name="contact.icon"></ion-icon>
+                  </div>
+                  <div class="contact-channel-info">
+                    <span class="contact-channel-label">{{ contact.title }}</span>
+                    <span class="contact-channel-value">{{ contact.display }}</span>
+                  </div>
+                  <ion-icon name="arrow-forward-outline" class="contact-channel-arrow"></ion-icon>
+                </a>
+              </li>
+            </ul>
 
-            <!-- Error message -->
-            <div v-else-if="formStatus === 'error'" class="form-status form-status--error">
-              <ion-icon name="alert-circle-outline"></ion-icon>
-              <p>Something went wrong. Please try again or email me directly.</p>
-            </div>
-
-            <form v-else class="form" @submit.prevent="submitForm">
-              <input type="hidden" name="form-name" value="contact" />
-              <p hidden><input name="bot-field" /></p>
-              <div class="input-wrapper">
-                <input
-                  type="text"
-                  name="fullname"
-                  class="form-input"
-                  placeholder="Full name"
-                  v-model="contactForm.fullname"
-                  required
-                />
-                <input
-                  type="email"
-                  name="email"
-                  class="form-input"
-                  placeholder="Email address"
-                  v-model="contactForm.email"
-                  required
-                />
-              </div>
-              <textarea
-                name="message"
-                class="form-input"
-                placeholder="Your Message"
-                v-model="contactForm.message"
-                required
-              ></textarea>
-              <button class="form-btn" type="submit" :disabled="formStatus === 'sending'">
-                <ion-icon :name="formStatus === 'sending' ? 'hourglass-outline' : 'paper-plane'"></ion-icon>
-                <span>{{ formStatus === 'sending' ? 'Sending…' : 'Send Message' }}</span>
-              </button>
-            </form>
+            <h3 class="h3 contact-ways-title" style="margin-top: 30px;">Message Me On</h3>
+            <ul class="contact-channels-list">
+              <li v-for="social in data.profile.socials" :key="social.link">
+                <a :href="social.link" class="contact-channel-card contact-channel-card--social" target="_blank" rel="noopener noreferrer">
+                  <div class="contact-channel-icon">
+                    <ion-icon :name="social.icon"></ion-icon>
+                  </div>
+                  <div class="contact-channel-info">
+                    <span class="contact-channel-label">{{ getSocialName(social.icon) }}</span>
+                    <span class="contact-channel-value">{{ getSocialHandle(social.link) }}</span>
+                  </div>
+                  <ion-icon name="arrow-forward-outline" class="contact-channel-arrow"></ion-icon>
+                </a>
+              </li>
+            </ul>
           </section>
         </article>
 
