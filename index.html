@@ -67,6 +67,8 @@
               </a>
             </li>
           </ul>
+
+          <div class="easter-egg-clue" title="Psst... try typing 'hireme' on your keyboard! 🤫">✦</div>
         </div>
       </aside>
 
@@ -306,8 +308,7 @@
             <div class="modal-content">
               <h4 class="h3 modal-title">{{ activeModalPost.title }}</h4>
               <time :datetime="activeModalPost.date">{{ activeModalPost.dateStr }}</time>
-              <div data-modal-text style="margin-top: 15px;">
-                <p>{{ activeModalPost.excerpt }}</p>
+              <div data-modal-text style="margin-top: 15px; white-space: pre-wrap; line-height: 1.6; color: var(--light-gray);" v-html="parsedModalText">
               </div>
             </div>
           </section>
@@ -320,6 +321,7 @@
   <!-- App Data and Logic -->
   <script src="./assets/js/data.js"></script>
   <script src="./assets/js/app.js"></script>
+  <script src="./assets/js/effects.js"></script>
 
 </body>
 

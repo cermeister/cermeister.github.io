@@ -129,3 +129,130 @@
     setTimeout(() => ripple.remove(), 650);
   });
 })();
+
+
+// ── 4. Keyboard Secret Easter Egg ─────────────────────────────────────
+(function () {
+  const secretCode = "hireme";
+  let inputBuffer = "";
+
+  document.addEventListener('keydown', (e) => {
+    // Ignore if typing in an input
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+    inputBuffer += e.key.toLowerCase();
+    
+    // Keep buffer same length as secret code
+    if (inputBuffer.length > secretCode.length) {
+      inputBuffer = inputBuffer.slice(-secretCode.length);
+    }
+
+    if (inputBuffer === secretCode) {
+      triggerDiscoMode();
+      inputBuffer = ""; // Reset
+    }
+  });
+
+  function triggerDiscoMode() {
+    if (document.body.classList.contains('disco-mode')) return; // prevent spam
+
+    // CSS Disco effect
+    const style = document.createElement('style');
+    style.innerHTML = `
+      @keyframes disco {
+        0% { filter: hue-rotate(0deg); }
+        100% { filter: hue-rotate(360deg); }
+      }
+      body.disco-mode {
+        animation: disco 2s linear infinite;
+      }
+      .disco-banner {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        background: linear-gradient(45deg, #ff00cc, #3333ff);
+        color: white;
+        padding: 40px 60px;
+        border-radius: 20px;
+        font-size: 3rem;
+        font-weight: 800;
+        z-index: 100000;
+        box-shadow: 0 10px 50px rgba(0,0,0,0.5);
+        text-align: center;
+        transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        pointer-events: none;
+      }
+      .disco-banner.show {
+        transform: translate(-50%, -50%) scale(1);
+      }
+      @media (max-width: 580px) {
+        .disco-banner { font-size: 1.5rem; padding: 20px 30px; width: 90%; }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Add class to body
+    document.body.classList.add('disco-mode');
+
+    // Create banner
+    const banner = document.createElement('div');
+    banner.className = 'disco-banner';
+    banner.innerHTML = "🎉 YOU FOUND THE SECRET! 🎉<br><span style='font-size:1.5rem'>Now you have to hire me! 😉</span>";
+    document.body.appendChild(banner);
+
+    // Show banner with animation
+    setTimeout(() => {
+      banner.classList.add('show');
+    }, 100);
+
+    const emojis = ['⭐', '✨', '💫', '🌟', '🎉', '🎊', '💙', '🚀', '🔥', '👏'];
+    function burstMany(x, y) {
+      const count = 15;
+      for (let i = 0; i < count; i++) {
+        const el = document.createElement('span');
+        el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        const angle = Math.random() * Math.PI * 2;
+        const dist = Math.random() * 150 + 50;
+        Object.assign(el.style, {
+          position: 'fixed',
+          left: x + 'px',
+          top: y + 'px',
+          fontSize: (Math.random() * 20 + 15) + 'px',
+          pointerEvents: 'none',
+          zIndex: '99999',
+          transform: 'translate(-50%, -50%)',
+          transition: 'all 1s ease-out',
+          opacity: '1',
+          userSelect: 'none'
+        });
+        document.body.appendChild(el);
+        requestAnimationFrame(() => {
+          el.style.left = (x + Math.cos(angle) * dist) + 'px';
+          el.style.top = (y + Math.sin(angle) * dist) + 'px';
+          el.style.opacity = '0';
+          el.style.transform = `translate(-50%, -50%) scale(${Math.random() * 0.5 + 0.5}) rotate(${Math.random() * 360}deg)`;
+        });
+        setTimeout(() => el.remove(), 1000);
+      }
+    }
+
+    // Fire confetti burst everywhere
+    let intervals = setInterval(() => {
+      const x = Math.random() * window.innerWidth;
+      const y = Math.random() * window.innerHeight;
+      burstMany(x, y);
+    }, 300);
+
+    // Stop after 6 seconds
+    setTimeout(() => {
+      clearInterval(intervals);
+      document.body.classList.remove('disco-mode');
+      banner.style.transform = "translate(-50%, -50%) scale(0)";
+      setTimeout(() => {
+        banner.remove();
+        style.remove();
+      }, 500);
+    }, 6000);
+  }
+})();
