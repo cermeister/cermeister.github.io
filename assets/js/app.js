@@ -3,41 +3,61 @@ const { createApp, ref, computed, onMounted } = Vue;
 createApp({
   setup() {
     const data = ref(portfolioData);
-    const activeTab = ref('blog');
+    const activeTab = ref('about');
     const activeCategory = ref('All');
     const isSidebarActive = ref(false);
     const activeModalPost = ref(null);
 
-    // ── Netlify Contact Form ───────────────────────────────────────
-    const contactForm = ref({ fullname: '', email: '', message: '' });
-    const formStatus = ref('idle'); // 'idle' | 'sending' | 'success' | 'error'
+    // ── Typewriter role cycling ──────────────────────────────
+    const roles = data.value.profile.role.split(' | ').map(r => r.trim());
+    const displayRole = ref(roles[0]);
+    let roleIndex = 0, charIndex = roles[0].length, isDeleting = false;
 
-    const encode = (data) =>
-      Object.keys(data)
-        .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
-        .join('&');
-
-    const submitForm = async () => {
-      formStatus.value = 'sending';
-      try {
-        const res = await fetch('/', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: encode({
-            'form-name': 'contact',
-            fullname: contactForm.value.fullname,
-            email: contactForm.value.email,
-            message: contactForm.value.message
-          })
-        });
-        if (res.ok) {
-          formStatus.value = 'success';
-          contactForm.value = { fullname: '', email: '', message: '' };
-        } else {
-          formStatus.value = 'error';
+    function typeStep() {
+      const current = roles[roleIndex];
+      if (!isDeleting) {
+        charIndex++;
+        displayRole.value = current.substring(0, charIndex);
+        if (charIndex === current.length) {
+          isDeleting = true;
+          setTimeout(typeStep, 2000);
+          return;
         }
-      } catch (_) {
-        formStatus.value = 'error';
+        setTimeout(typeStep, 75);
+      } else {
+        charIndex--;
+        displayRole.value = current.substring(0, charIndex);
+        if (charIndex === 0) {
+          isDeleting = false;
+          roleIndex = (roleIndex + 1) % roles.length;
+          setTimeout(typeStep, 300);
+          return;
+        }
+        setTimeout(typeStep, 40);
+      }
+    }
+
+    // ── Contact helpers ────────────────────────────────────────
+    const socialNames = {
+      'logo-whatsapp':  'WhatsApp',
+      'logo-discord':   'Discord',
+      'logo-instagram': 'Instagram',
+      'logo-twitter':   'Twitter / X',
+      'logo-linkedin':  'LinkedIn',
+      'logo-github':    'GitHub',
+      'logo-youtube':   'YouTube',
+      'logo-tiktok':    'TikTok',
+    };
+
+    const getSocialName = (icon) => socialNames[icon] || icon.replace('logo-', '');
+
+    const getSocialHandle = (url) => {
+      try {
+        const path = new URL(url).pathname.replace(/\/+$/, '');
+        const parts = path.split('/').filter(Boolean);
+        return parts[parts.length - 1] ? '@' + parts[parts.length - 1] : url;
+      } catch {
+        return url;
       }
     };
 
@@ -84,9 +104,9 @@ createApp({
       activeModalPost,
       openModal,
       closeModal,
-      contactForm,
-      formStatus,
-      submitForm
+      getSocialName,
+      getSocialHandle,
+      displayRole
     };
   }
 }).mount('#app');

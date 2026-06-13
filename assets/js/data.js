@@ -25,7 +25,7 @@ const portfolioData = {
       }
     ],
     socials: [
-      { icon: "logo-facebook", link: "https://www.facebook.com/caciah/" },
+
       { icon: "logo-whatsapp", link: "https://wa.me/+639092408520" },
       { icon: "logo-discord", link: "https://discord.com/users/1353980276501516288" },
       { icon: "logo-instagram", link: "https://www.instagram.com/itsthecermeister/" }
