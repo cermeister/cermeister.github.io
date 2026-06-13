@@ -8,6 +8,39 @@ createApp({
     const isSidebarActive = ref(false);
     const activeModalPost = ref(null);
 
+    // ── Netlify Contact Form ───────────────────────────────────────
+    const contactForm = ref({ fullname: '', email: '', message: '' });
+    const formStatus = ref('idle'); // 'idle' | 'sending' | 'success' | 'error'
+
+    const encode = (data) =>
+      Object.keys(data)
+        .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
+        .join('&');
+
+    const submitForm = async () => {
+      formStatus.value = 'sending';
+      try {
+        const res = await fetch('/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: encode({
+            'form-name': 'contact',
+            fullname: contactForm.value.fullname,
+            email: contactForm.value.email,
+            message: contactForm.value.message
+          })
+        });
+        if (res.ok) {
+          formStatus.value = 'success';
+          contactForm.value = { fullname: '', email: '', message: '' };
+        } else {
+          formStatus.value = 'error';
+        }
+      } catch (_) {
+        formStatus.value = 'error';
+      }
+    };
+
     // Filter portfolio projects based on active category
     const filteredProjects = computed(() => {
       if (activeCategory.value === 'All') {
@@ -50,7 +83,10 @@ createApp({
       isSidebarActive,
       activeModalPost,
       openModal,
-      closeModal
+      closeModal,
+      contactForm,
+      formStatus,
+      submitForm
     };
   }
 }).mount('#app');

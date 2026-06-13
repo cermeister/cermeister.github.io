@@ -21,6 +21,17 @@
 </head>
 
 <body>
+
+  <!--
+    Hidden form for Netlify's deploy-time form detection.
+    Required when the real form is rendered by JavaScript.
+  -->
+  <form name="contact" data-netlify="true" netlify-honeypot="bot-field" hidden>
+    <input type="text" name="fullname" />
+    <input type="email" name="email" />
+    <textarea name="message"></textarea>
+  </form>
+
   <div id="app">
     <main>
       <!-- SIDEBAR -->
@@ -255,15 +266,50 @@
 
           <section class="contact-form">
             <h3 class="h3 form-title">Contact Form</h3>
-            <form action="#" class="form" data-form>
+
+            <!-- Success message -->
+            <div v-if="formStatus === 'success'" class="form-status form-status--success">
+              <ion-icon name="checkmark-circle-outline"></ion-icon>
+              <p>Message sent! I'll get back to you soon. 🎉</p>
+            </div>
+
+            <!-- Error message -->
+            <div v-else-if="formStatus === 'error'" class="form-status form-status--error">
+              <ion-icon name="alert-circle-outline"></ion-icon>
+              <p>Something went wrong. Please try again or email me directly.</p>
+            </div>
+
+            <form v-else class="form" @submit.prevent="submitForm">
+              <input type="hidden" name="form-name" value="contact" />
+              <p hidden><input name="bot-field" /></p>
               <div class="input-wrapper">
-                <input type="text" name="fullname" class="form-input" placeholder="Full name" required data-form-input>
-                <input type="email" name="email" class="form-input" placeholder="Email address" required data-form-input>
+                <input
+                  type="text"
+                  name="fullname"
+                  class="form-input"
+                  placeholder="Full name"
+                  v-model="contactForm.fullname"
+                  required
+                />
+                <input
+                  type="email"
+                  name="email"
+                  class="form-input"
+                  placeholder="Email address"
+                  v-model="contactForm.email"
+                  required
+                />
               </div>
-              <textarea name="message" class="form-input" placeholder="Your Message" required data-form-input></textarea>
-              <button class="form-btn" type="submit" data-form-btn>
-                <ion-icon name="paper-plane"></ion-icon>
-                <span>Send Message</span>
+              <textarea
+                name="message"
+                class="form-input"
+                placeholder="Your Message"
+                v-model="contactForm.message"
+                required
+              ></textarea>
+              <button class="form-btn" type="submit" :disabled="formStatus === 'sending'">
+                <ion-icon :name="formStatus === 'sending' ? 'hourglass-outline' : 'paper-plane'"></ion-icon>
+                <span>{{ formStatus === 'sending' ? 'Sending…' : 'Send Message' }}</span>
               </button>
             </form>
           </section>

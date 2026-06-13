@@ -2256,3 +2256,47 @@ textarea.form-input::-webkit-resizer {
 .avatar-box:hover .avatar-hover {
   opacity: 1;
 }
+
+
+/*-----------------------------------*\
+  #CONTACT FORM STATUS
+\*-----------------------------------*/
+
+.form-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border-radius: 14px;
+  font-size: var(--fs-6);
+  font-weight: var(--fw-500);
+  margin-bottom: 20px;
+  animation: fade 0.4s ease backwards;
+}
+
+.form-status ion-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.form-status p {
+  line-height: 1.5;
+}
+
+.form-status--success {
+  background: hsla(142, 60%, 40%, 0.15);
+  border: 1px solid hsla(142, 60%, 40%, 0.4);
+  color: hsl(142, 60%, 65%);
+}
+
+.form-status--error {
+  background: hsla(0, 60%, 50%, 0.15);
+  border: 1px solid hsla(0, 60%, 50%, 0.4);
+  color: hsl(0, 75%, 70%);
+}
+
+.form-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
